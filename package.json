@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/tonylukasavage/wp2octo/issues"
   },
-  "homepage": "https://github.com/tonylukasavage/wp2octo"
+  "homepage": "https://github.com/tonylukasavage/wp2octo",
+  "dependencies": {
+    "xmldom": "^0.1.19"
+  }
 }

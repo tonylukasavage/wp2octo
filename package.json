@@ -1,0 +1,27 @@
+{
+  "name": "wp2octo",
+  "version": "0.0.0",
+  "description": "Convert WordPress XML export to octopress",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tonylukasavage/wp2octo"
+  },
+  "keywords": [
+    "octopress",
+    "wordpress",
+    "convert"
+  ],
+  "author": "Tony Lukasavage",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tonylukasavage/wp2octo/issues"
+  },
+  "homepage": "https://github.com/tonylukasavage/wp2octo"
+}

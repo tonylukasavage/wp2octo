@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+var path = require('path'),
+	wp2octo = require('..');
+
+var exportFile = process.argv[2],
+	octopress = path.resolve(process.argv[3] || '.');
+
+wp2octo(exportFile, octopress);

@@ -3,6 +3,14 @@ var fs = require('fs'),
 	path = require('path'),
 	xmldom = require('xmldom');
 
+var IGNORE_TAGS = [
+	'buildmobile.com',
+	'portfolio',
+	'blog',
+	'uncategorized',
+	'mobie'
+];
+
 var serializer = new xmldom.XMLSerializer(),
 	doc;
 

@@ -26,7 +26,8 @@ module.exports = function main(exportFile, octopress) {
 	}
 
 	// read export xml
-	var xml = fs.readFileSync(exportFile, 'utf8');
+	var xml = fs.readFileSync(exportFile, 'utf8'),
+		source = fs.readFileSync(path.join(__dirname, 'src', 'post.markdown'));
 	doc = new xmldom.DOMParser().parseFromString(xml);
 
 	// find posts
@@ -49,12 +50,17 @@ module.exports = function main(exportFile, octopress) {
 				.replace(/&#039;/g, "'"),
 			date: col('post_date'),
 			status: col('post_status'),
-			title: col('post_title')
+			title: col('post_title'),
+			categories: []
 		};
-		if (post.status !== 'publish') {
-			return;
-		}
-		console.log(post);
+
+		// skip unpublished entries
+		if (post.status !== 'publish') { return; }
+
+		// create post
+		var result = _.template(source, post);
+
+		console.log(result);
 		//process.exit();
 	});
 

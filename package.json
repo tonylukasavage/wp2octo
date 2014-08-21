@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/tonylukasavage/wp2octo",
   "dependencies": {
+    "lodash": "^2.4.1",
     "xmldom": "^0.1.19"
   }
 }

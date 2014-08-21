@@ -30,15 +30,34 @@ module.exports = function main(exportFile, octopress) {
 		source = fs.readFileSync(path.join(__dirname, 'src', 'post.markdown'));
 	doc = new xmldom.DOMParser().parseFromString(xml);
 
-	// find posts
-	getElements('table').filter(function(table) {
+	// create tag map
+	var tagMap = {};
+	getElements({ name: 'table', attr: 'name', attrValue: 'wp_terms' }).filter(function(table) {
 		return getElement({
 			node: table,
 			name: 'column',
 			attr: 'name',
-			attrValue: 'post_type',
-			value: 'post'
+			attrValue: 'term_group',
+			value: '0'
 		});
+	}).forEach(function(term) {
+		var col = function(n) { return getColumnValue(term, n); };
+		tagMap[col('term_id')] = col('name');
+	});
+
+	console.log(tagMap);
+
+	// find posts
+	getElements('table').filter(function(table) {
+		var has = function(o) {
+			return !!getElement(_.extend({
+				node: table,
+				name: 'column',
+				attr: 'name'
+			}, o));
+		};
+		return has({ attrValue: 'post_type', value: 'post' }) &&
+			has({ attrValue: 'post_status', value: 'publish' });
 	}).forEach(function(elem) {
 		var col = function(n) { return getColumnValue(elem, n); };
 		var post = {
@@ -54,11 +73,15 @@ module.exports = function main(exportFile, octopress) {
 			categories: []
 		};
 
-		// skip unpublished entries
-		if (post.status !== 'publish') { return; }
-
 		// create post
 		var result = _.template(source, post);
+
+		// save to octopress
+		var filename = post.date.split(' ')[0] + '-' +
+			post.title.toLowerCase().replace(/\W/g, '-') + '.markdown';
+
+		console.log(path.join(postsDir, filename));
+		//fs.writeFileSync(path.join(postsDir, filename));
 
 		console.log(result);
 		//process.exit();

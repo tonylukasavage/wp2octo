@@ -53,7 +53,18 @@ module.exports = function main(exportFile, octopress) {
 		tagMap[col('term_id')] = col('name');
 	});
 
-	console.log(tagMap);
+	// create taxonomy map
+	var taxonomyMap = {};
+	getElements({ name: 'table', attr: 'name', attrValue: 'wp_term_taxonomy' }).filter(function(table) {
+		return getElement({
+			node: table,
+			name: 'column',
+			attr: 'name'
+		});
+	}).forEach(function(term) {
+		var col = function(n) { return getColumnValue(term, n); };
+		taxonomyMap[col('term_taxonomy_id')] = col('term_id');
+	});
 
 	// find posts
 	getElements('table').filter(function(table) {
@@ -69,6 +80,7 @@ module.exports = function main(exportFile, octopress) {
 	}).forEach(function(elem) {
 		var col = function(n) { return getColumnValue(elem, n); };
 		var post = {
+			categories: [],
 			content: col('post_content')
 				.replace(/&amp;/g, "&")
 				.replace(/&lt;/g, "<")
@@ -76,10 +88,27 @@ module.exports = function main(exportFile, octopress) {
 				.replace(/&quot;/g, "\"")
 				.replace(/&#039;/g, "'"),
 			date: col('post_date'),
+			id: col('ID'),
 			status: col('post_status'),
-			title: col('post_title'),
-			categories: []
+			title: col('post_title')
 		};
+
+		// find tags for post
+		var tags = [];
+		getElements({
+			name: 'table',
+			attr: 'name',
+			attrValue: 'wp_term_relationships'
+		}).forEach(function(elem) {
+			var col = function(n) { return getColumnValue(elem, n); };
+			if (col('object_id') === post.id) {
+				var tag = tagMap[taxonomyMap[col('term_taxonomy_id')]].toLowerCase();
+				if (!_.contains(IGNORE_TAGS, tag)) {
+					post.categories.push(tag);
+				}
+			}
+		});
+		post.categories = _.unique(post.categories);
 
 		// create post
 		var result = _.template(source, post);

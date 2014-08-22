@@ -80,7 +80,7 @@ module.exports = function main(exportFile, octopress) {
 	}).forEach(function(elem) {
 		var col = function(n) { return getColumnValue(elem, n); };
 		var post = {
-			categories: [],
+			categories: ['archive'],
 			content: col('post_content')
 				.replace(/&amp;/g, "&")
 				.replace(/&lt;/g, "<")

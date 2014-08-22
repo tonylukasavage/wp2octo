@@ -67,6 +67,7 @@ module.exports = function main(exportFile, octopress) {
 	});
 
 	// find posts
+	var ctr = 0;
 	getElements('table').filter(function(table) {
 		var has = function(o) {
 			return !!getElement(_.extend({
@@ -78,6 +79,8 @@ module.exports = function main(exportFile, octopress) {
 		return has({ attrValue: 'post_type', value: 'post' }) &&
 			has({ attrValue: 'post_status', value: 'publish' });
 	}).forEach(function(elem) {
+		process.stdout.write('\r> processing post #' + ++ctr + '...');
+
 		var col = function(n) { return getColumnValue(elem, n); };
 		var post = {
 			categories: ['archive'],
@@ -116,13 +119,10 @@ module.exports = function main(exportFile, octopress) {
 		// save to octopress
 		var filename = post.date.split(' ')[0] + '-' +
 			post.title.toLowerCase().replace(/\W/g, '-') + '.markdown';
-
-		console.log(path.join(postsDir, filename));
-		//fs.writeFileSync(path.join(postsDir, filename));
-
-		console.log(result);
-		//process.exit();
+		fs.writeFileSync(path.join(postsDir, filename), result);
 	});
+
+	console.log('\n> done.');
 
 }
 

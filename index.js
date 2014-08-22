@@ -87,7 +87,7 @@ module.exports = function main(exportFile, octopress) {
 				.replace(/&gt;/g, ">")
 				.replace(/&quot;/g, "\"")
 				.replace(/&#039;/g, "'"),
-			date: col('post_date'),
+			date: col('post_date').replace(/.{3}$/,''),
 			id: col('ID'),
 			status: col('post_status'),
 			title: col('post_title')
